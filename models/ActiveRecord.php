@@ -97,7 +97,7 @@ class ActiveRecord {
         return $stmt->execute($atributos);
     }
 
-    // Eliminar un registro
+  // Eliminar un registro
     public function eliminar() {
         // Eliminar el registro
         $query = "DELETE FROM " . static::$tabla . " WHERE id = :id LIMIT 1";
@@ -153,4 +153,32 @@ class ActiveRecord {
         return $sanitizado;
     }
 
-    public function sinc
+    public function sincronizar($args=[]) { 
+        foreach($args as $key => $value) {
+          if(property_exists($this, $key) && !is_null($value)) {
+            $this->$key = $value;
+          }
+        }
+    }
+
+    // Subida de archivos
+    public function setImagen($imagen) {
+        // Elimina la imagen previa
+        if( !is_null($this->id) ) {
+            $this->borrarImagen();
+        }
+        // Asignar al atributo de imagen el nombre de la imagen
+        if($imagen) {
+            $this->imagen = $imagen;
+        }
+    }
+
+    // Elimina el archivo
+    public function borrarImagen() {
+        // Comprobar si existe el archivo
+        $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
+        if($existeArchivo) {
+            unlink(CARPETA_IMAGENES . $this->imagen);
+        }
+    }
+}
