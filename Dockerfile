@@ -25,3 +25,6 @@ EXPOSE 80
 
 # Comando de inicio del servidor Apache
 CMD ["apache2-foreground"]
+
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
