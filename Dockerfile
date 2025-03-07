@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Establece el directorio de trabajo
-WORKDIR /var/www/html/public
+WORKDIR /var/www/html
+
 
 
 # Copia el contenido del proyecto
