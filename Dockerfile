@@ -1,21 +1,25 @@
 # Usa la imagen oficial de PHP con Apache
 FROM php:8.1-apache
 
-# Instalar dependencias necesarias para PostgreSQL
+# Instalar dependencias necesarias para PostgreSQL y otras extensiones PHP
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
+    libpq-dev unzip git \
     && docker-php-ext-install pdo pdo_pgsql
 
-# Instalar Composer desde la imagen oficial
+# Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Establece el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copia todo el contenido del proyecto
+# Copia el contenido del proyecto
 COPY . .
 
-# Exponer el puerto 80
+# Ajustar permisos para Apache (importante en Render)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Exponer el puerto 80 para Apache
 EXPOSE 80
 
 # Comando de inicio del servidor Apache
