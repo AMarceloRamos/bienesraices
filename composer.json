@@ -1,16 +1,19 @@
 {
-    "name": "juandelatorre/bienes-raices-poo_php_inicio",
-    "description": "Creando un proyecto con POO",
+    "name": "AdrianRamos/bienes-raices",
+    "description": "proyecto personal de servicio web con la logica de negocio de un sitio web dedicado a la veneta de bienes raíces",
     "type": "project",
     "authors": [
         {
-            "name": "Juan Pablo De la torre Valdez",
-            "email": "ptorre@creativaweb.mx"
+            "name": "Adrián Ramos",
+            "email": "adrianramosv@hotmail.com"
         }
     ],
     "require": {
-        "intervention/image": "^2.5",
-        "phpmailer/phpmailer": "^6.3"
+          "php": ">=8.0",
+          "vlucas/phpdotenv": "^5.5",
+            "firebase/php-jwt": "^6.3"
+            "intervention/image": "^2.5",
+            "phpmailer/phpmailer": "^6.3"
     },
     "autoload": {
         "psr-4": {
@@ -18,5 +21,8 @@
             "Controllers\\" : "./controllers",
             "Model\\" : "./models"
         }
-    }
+    },
+      "scripts": {
+    "start": "php -S 0.0.0.0:10000 -t public"
+  }
 }
