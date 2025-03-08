@@ -1,44 +1,24 @@
 <?php
 
-function conectarDB(): ?PDO {
-    $db_url = getenv('DATABASE_URL');  // Render asigna esta variable automáticamente
+function conectarDB() {
+    $url = "postgresql://contactodb_i7hi_user:1BesM5VW4iwl5rdJP9IXqNwETiKW9hA0@dpg-cur1vpdds78s7384bkr0-a.oregon-postgres.render.com/contactodb_i7hi";
+    
+    // Parsear la URL para obtener los valores
+    $dbopts = parse_url($url);
 
-    if (!$db_url) {
-        error_log("Error: No se encontró la variable de entorno DATABASE_URL.");
-        return null;
-    }
-
-    // Convertir la URL de PostgreSQL si es necesario
-    $db_url = str_replace("postgresql://", "pgsql://", $db_url);
-    $url_parts = parse_url($db_url);
-
-    if (!$url_parts || !isset($url_parts['host'], $url_parts['user'], $url_parts['pass'], $url_parts['path'])) {
-        error_log("Error: No se pudo parsear correctamente DATABASE_URL.");
-        return null;
-    }
-
-    $host = $url_parts['host'];
-    $port = $url_parts['port'] ?? '5432';  // Puerto predeterminado
-    $dbname = ltrim($url_parts['path'], '/');  // Eliminar la barra inicial
-    $user = $url_parts['user'];
-    $password = $url_parts['pass'];
-
-    // Verificar si el nombre de la BD tiene un guion bajo final y corregirlo
-    if (str_ends_with($dbname, '_')) {
-        $dbname = rtrim($dbname, '_');
-    }
-
-    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+    $host = $dbopts["host"];
+    $port = isset($dbopts["port"]) ? $dbopts["port"] : "5432"; // Puerto 5432 por defecto
+    $user = $dbopts["user"];
+    $pass = $dbopts["pass"];
+    $dbname = ltrim($dbopts["path"], "/");
 
     try {
-        $db = new PDO($dsn, $user, $password, [
+        $db = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
-        error_log("Conexión exitosa a la BD: $dbname en $host:$port");
         return $db;
     } catch (PDOException $e) {
-        error_log("Error de conexión: " . $e->getMessage());
-        return null;
+        die("Error de conexión: " . $e->getMessage());
     }
 }
