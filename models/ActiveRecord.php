@@ -104,3 +104,4 @@ class ActiveRecord {
         $stmt = self::$db->prepare($query);
         return $stmt->execute(['id' => $this->id]);
     }
+}
