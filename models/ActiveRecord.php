@@ -103,3 +103,4 @@ class ActiveRecord {
         $query = "DELETE FROM " . static::$tabla . " WHERE id = :id LIMIT 1";
         $stmt = self::$db->prepare($query);
         return $stmt->execute(['id' => $this->id]);
+    }
