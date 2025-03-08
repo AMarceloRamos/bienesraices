@@ -1,5 +1,5 @@
 <?php
-use PDO;
+
 namespace Model;
 
 class ActiveRecord {
@@ -103,82 +103,3 @@ class ActiveRecord {
         $query = "DELETE FROM " . static::$tabla . " WHERE id = :id LIMIT 1";
         $stmt = self::$db->prepare($query);
         return $stmt->execute(['id' => $this->id]);
-    }
-
-    public static function consultarSQL($query, $params = []) {
-        // Consultar la base de datos usando PDO
-        $stmt = self::$db->prepare($query);
-        $stmt->execute($params);
-
-        // Recuperar todos los resultados
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Crear objetos a partir de los resultados
-        $array = [];
-        foreach($resultados as $registro) {
-            $array[] = static::crearObjeto($registro);
-        }
-
-        return $array;
-    }
-
-    protected static function crearObjeto($registro) {
-        $objeto = new static;
-
-        foreach($registro as $key => $value ) {
-            if(property_exists($objeto, $key)) {
-                $objeto->$key = $value;
-            }
-        }
-
-        return $objeto;
-    }
-
-    // Identificar y unir los atributos de la BD
-    public function atributos() {
-        $atributos = [];
-        foreach(static::$columnasDB as $columna) {
-            if($columna === 'id') continue;
-            $atributos[$columna] = $this->$columna;
-        }
-        return $atributos;
-    }
-
-    public function sanitizarAtributos() {
-        $atributos = $this->atributos();
-        $sanitizado = [];
-        foreach($atributos as $key => $value ) {
-            $sanitizado[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-        }
-        return $sanitizado;
-    }
-
-    public function sincronizar($args=[]) { 
-        foreach($args as $key => $value) {
-          if(property_exists($this, $key) && !is_null($value)) {
-            $this->$key = $value;
-          }
-        }
-    }
-
-    // Subida de archivos
-    public function setImagen($imagen) {
-        // Elimina la imagen previa
-        if( !is_null($this->id) ) {
-            $this->borrarImagen();
-        }
-        // Asignar al atributo de imagen el nombre de la imagen
-        if($imagen) {
-            $this->imagen = $imagen;
-        }
-    }
-
-    // Elimina el archivo
-    public function borrarImagen() {
-        // Comprobar si existe el archivo
-        $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
-        if($existeArchivo) {
-            unlink(CARPETA_IMAGENES . $this->imagen);
-        }
-    }
-}
