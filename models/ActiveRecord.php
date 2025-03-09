@@ -105,81 +105,69 @@ class ActiveRecord {
         return $stmt->execute(['id' => $this->id]);
     }
 public static function consultarSQL($query) {
-        // Consultar la base de datos
-        $resultado = self::$db->query($query);
+    // Consultar la base de datos
+    $resultado = pg_query(self::$db, $query);
 
-        // Iterar los resultados
-        $array = [];
-        while($registro = $resultado->fetch_assoc()) {
-            $array[] = static::crearObjeto($registro);
-        }
-
-        // liberar la memoria
-        $resultado->free();
-
-        // retornar los resultados
-        return $array;
+    // Verificar si la consulta fue exitosa
+    if (!$resultado) {
+        die("Error en la consulta: " . pg_last_error(self::$db));
     }
 
-    protected static function crearObjeto($registro) {
-        $objeto = new static;
-
-        foreach($registro as $key => $value ) {
-            if(property_exists( $objeto, $key  )) {
-                $objeto->$key = $value;
-            }
-        }
-
-        return $objeto;
+    // Iterar los resultados
+    $array = [];
+    while ($registro = pg_fetch_assoc($resultado)) {
+        $array[] = static::crearObjeto($registro);
     }
 
+    // Liberar la memoria
+    pg_free_result($resultado);
 
+    // Retornar los resultados
+    return $array;
+}
 
-    // Identificar y unir los atributos de la BD
-    public function atributos() {
-        $atributos = [];
-        foreach(static::$columnasDB as $columna) {
-            if($columna === 'id') continue;
-            $atributos[$columna] = $this->$columna;
+protected static function crearObjeto($registro) {
+    $objeto = new static;
+
+    foreach ($registro as $key => $value) {
+        if (property_exists($objeto, $key)) {
+            $objeto->$key = $value;
         }
-        return $atributos;
     }
 
-    public function sanitizarAtributos() {
-        $atributos = $this->atributos();
-        $sanitizado = [];
-        foreach($atributos as $key => $value ) {
-            $sanitizado[$key] = self::$db->escape_string($value);
-        }
-        return $sanitizado;
-    }
+    return $objeto;
+}
 
-    public function sincronizar($args=[]) { 
-        foreach($args as $key => $value) {
-          if(property_exists($this, $key) && !is_null($value)) {
+// Identificar y unir los atributos de la BD
+public function atributos() {
+    $atributos = [];
+    foreach (static::$columnasDB as $columna) {
+        if ($columna === 'id') continue;
+        $atributos[$columna] = $this->$columna;
+    }
+    return $atributos;
+}
+
+public function sanitizarAtributos() {
+    $atributos = $this->atributos();
+    $sanitizado = [];
+    foreach ($atributos as $key => $value) {
+        $sanitizado[$key] = pg_escape_string(self::$db, $value);
+    }
+    return $sanitizado;
+}
+
+public function sincronizar($args = []) { 
+    foreach ($args as $key => $value) {
+        if (property_exists($this, $key) && !is_null($value)) {
             $this->$key = $value;
-          }
         }
     }
+}
 
-    // Subida de archivos
-    public function setImagen($imagen) {
-        // Elimina la imagen previa
-        if( !is_null($this->id) ) {
-            $this->borrarImagen();
-        }
-        // Asignar al atributo de imagen el nombre de la imagen
-        if($imagen) {
-            $this->imagen = $imagen;
-        }
-    }
-
-    // Elimina el archivo
-    public function borrarImagen() {
-        // Comprobar si existe el archivo
-        $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
-        if($existeArchivo) {
-            unlink(CARPETA_IMAGENES . $this->imagen);
-        }
-    }
+// Subida de archivos
+public function setImagen($imagen) {
+    // Elimina la imagen previa
+    if (!is_null($this
+                 }
 }
