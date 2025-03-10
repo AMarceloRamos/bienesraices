@@ -113,9 +113,6 @@ public static function consultarSQL($query) {
     } catch (PDOException $e) {
         die("Error en la consulta SQL: " . $e->getMessage());
     }
-}
-
-
 
     // Iterar los resultados
     $array = [];
