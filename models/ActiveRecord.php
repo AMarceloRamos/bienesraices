@@ -97,11 +97,16 @@ class ActiveRecord {
         $stmt = self::$db->prepare($query);
         return $stmt->execute(['id' => $this->id]);
     }
-public static function consultarSQL($query) {
-    // Consultar la base de datos usando PDO
+public static function consultarSQL($query, $params = []) {
     try {
-        $stmt = self::$db->query($query);
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener todos los registros como array asociativo
+        // Preparar la consulta
+        $stmt = self::$db->prepare($query);
+        
+        // Ejecutar la consulta con los parámetros si existen
+        $stmt->execute($params);
+
+        // Obtener los resultados como array asociativo
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Convertir resultados en objetos de la clase actual
         $array = [];
@@ -113,19 +118,8 @@ public static function consultarSQL($query) {
     } catch (PDOException $e) {
         die("Error en la consulta SQL: " . $e->getMessage());
     }
-
-    // Iterar los resultados
-    $array = [];
-    while ($registro = pg_fetch_assoc($resultado)) {
-        $array[] = static::crearObjeto($registro);
-    }
-
-    // Liberar la memoria
-    pg_free_result($resultado);
-
-    // Retornar los resultados
-    return $array;
 }
+
 
 protected static function crearObjeto($registro) {
     $objeto = new static;
