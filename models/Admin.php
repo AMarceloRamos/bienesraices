@@ -45,7 +45,8 @@ class Admin extends ActiveRecord {
     }
 
     public function comprobarPassword($resultado) {
-        $usuario = $resultado->fetch_object();
+       $usuario = $stmt->fetchObject('Model\Admin');
+
 
         $this->autenticado = password_verify( $this->password, $usuario->password );
 
