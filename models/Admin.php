@@ -44,19 +44,24 @@ class Admin extends ActiveRecord {
         return $resultado;
     }
 
-    public function comprobarPassword($resultado) {
-      // Antes: $usuario = $stmt->fetch_object();
-      $usuario = $stmt->fetchObject(); 
-;
+   public function comprobarPassword($resultado) {
+    if ($resultado instanceof PDOStatement) { // ✅ Verificar que $resultado es un objeto PDOStatement
+        $usuario = $resultado->fetchObject(); // ✅ Ahora sí podemos llamar a fetchObject()
+        
+        if ($usuario) {
+            $this->autenticado = password_verify($this->password, $usuario->password);
 
-
-        $this->autenticado = password_verify( $this->password, $usuario->password );
-
-        if(!$this->autenticado) {
-            self::$errores[] = 'El Password es Incorrecto';
-            return;
-        } 384;
+            if (!$this->autenticado) {
+                self::$errores[] = 'El Password es Incorrecto';
+            }
+        } else {
+            self::$errores[] = 'Usuario no encontrado';
+        }
+    } else {
+        self::$errores[] = 'Error al obtener los datos del usuario';
     }
+}
+
 
     public function autenticar() {
          // El usuario esta autenticado
