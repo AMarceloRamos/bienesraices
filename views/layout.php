@@ -1,4 +1,6 @@
 <?php
+
+    ob_start();
     if(!isset($_SESSION)) {
         session_start();
     }
@@ -59,7 +61,7 @@
 
 
     <?php echo $contenido; ?>
-
+<?php ob_end_flush(); ?>
 
     <footer class="footer seccion">
         <div class="contenedor contenedor-footer">
