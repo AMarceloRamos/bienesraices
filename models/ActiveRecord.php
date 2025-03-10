@@ -1,6 +1,4 @@
 <?php
-use PDO;
-use PDOException;
 
 namespace Model;
 
@@ -108,7 +106,7 @@ public static function consultarSQL($query, $params = []) {
         $stmt->execute($params);
 
         // Obtener los resultados como array asociativo
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultados = $stmt->fetchAll(\PDO::FETCH_ASSOC); // <-- Agregar la barra invertida "\"
 
         // Convertir resultados en objetos de la clase actual
         $array = [];
@@ -117,10 +115,11 @@ public static function consultarSQL($query, $params = []) {
         }
 
         return $array;
-    } catch (PDOException $e) {
+    } catch (\PDOException $e) { // <-- También aquí
         die("Error en la consulta SQL: " . $e->getMessage());
     }
 }
+
 
 
 protected static function crearObjeto($registro) {
