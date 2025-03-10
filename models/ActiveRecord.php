@@ -80,22 +80,15 @@ class ActiveRecord {
         return $stmt->execute($atributos);
     }
 
-    public function actualizar() {
-        // Sanitizar los datos
-        $atributos = $this->sanitizarAtributos();
-
-        $valores = [];
-        foreach($atributos as $key => $value) {
-            $valores[] = "{$key} = :{$key}";
-        }
-
-        $query = "UPDATE " . static::$tabla . " SET " . join(', ', $valores) . " WHERE id = :id LIMIT 1";
-
-        // Preparar y ejecutar la consulta
-        $stmt = self::$db->prepare($query);
-        $atributos['id'] = $this->id;  // Aseguramos que el ID esté en los parámetros
-        return $stmt->execute($atributos);
+   public function sanitizarAtributos() {
+    $atributos = $this->atributos();
+    $sanitizado = [];
+    foreach ($atributos as $key => $value) {
+        $sanitizado[$key] = self::$db->quote($value); // Usa quote() para sanitizar
     }
+    return $sanitizado;
+}
+
 
   // Eliminar un registro
     public function eliminar() {
@@ -105,13 +98,23 @@ class ActiveRecord {
         return $stmt->execute(['id' => $this->id]);
     }
 public static function consultarSQL($query) {
-    // Consultar la base de datos
-    $resultado = pg_query(self::$db, $query);
+    // Consultar la base de datos usando PDO
+    try {
+        $stmt = self::$db->query($query);
+        $resultados = $stmt->fetchAll(); // Obtener todos los registros como array asociativo
 
-    // Verificar si la consulta fue exitosa
-    if (!$resultado) {
-        die("Error en la consulta: " . pg_last_error(self::$db));
+        // Convertir resultados en objetos de la clase actual
+        $array = [];
+        foreach ($resultados as $registro) {
+            $array[] = static::crearObjeto($registro);
+        }
+
+        return $array;
+    } catch (PDOException $e) {
+        die("Error en la consulta SQL: " . $e->getMessage());
     }
+}
+
 
     // Iterar los resultados
     $array = [];
