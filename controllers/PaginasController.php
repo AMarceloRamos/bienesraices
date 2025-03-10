@@ -17,6 +17,8 @@ class PaginasController {
     }
 
     public static function nosotros( Router $router ) {
+         var_dump("Se está ejecutando nosotros()"); // Prueba si se llama la función
+            die(); // Para detener la ejecución y ver si se muestra este mensaje
         $router->render('paginas/nosotros', [
 
         ]);
