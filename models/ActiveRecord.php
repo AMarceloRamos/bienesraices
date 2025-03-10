@@ -101,7 +101,7 @@ public static function consultarSQL($query) {
     // Consultar la base de datos usando PDO
     try {
         $stmt = self::$db->query($query);
-        $resultados = $stmt->fetchAll(); // Obtener todos los registros como array asociativo
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener todos los registros como array asociativo
 
         // Convertir resultados en objetos de la clase actual
         $array = [];
@@ -114,6 +114,7 @@ public static function consultarSQL($query) {
         die("Error en la consulta SQL: " . $e->getMessage());
     }
 }
+
 
 
     // Iterar los resultados
