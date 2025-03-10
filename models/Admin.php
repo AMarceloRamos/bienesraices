@@ -36,7 +36,7 @@ class Admin extends ActiveRecord {
         $query = "SELECT * FROM " . self::$tabla . " WHERE email = '" . $this->email . "' LIMIT 1";
         $resultado = self::$db->query($query);
 
-        if(!$resultado->num_rows) {
+        if(!$resultado->rowCount()) {
             self::$errores[] = 'El Usuario No Existe';
             return;
         }
