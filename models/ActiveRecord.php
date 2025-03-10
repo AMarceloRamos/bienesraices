@@ -149,14 +149,14 @@ public function atributos() {
     return $atributos;
 }
 
-public function sanitizarAtributos() {
-    $atributos = $this->atributos();
-    $sanitizado = [];
-    foreach ($atributos as $key => $value) {
-        $sanitizado[$key] = pg_escape_string(self::$db, $value);
-    }
-    return $sanitizado;
-}
+// public function sanitizarAtributos() {
+//     $atributos = $this->atributos();
+//     $sanitizado = [];
+//     foreach ($atributos as $key => $value) {
+//         $sanitizado[$key] = pg_escape_string(self::$db, $value);
+//     }
+//     return $sanitizado;
+// }
 
 public function sincronizar($args = []) { 
     foreach ($args as $key => $value) {
