@@ -45,6 +45,7 @@ class Admin extends ActiveRecord {
     }
 
    public function comprobarPassword($resultado) {
+       public $autenticado = false; 
     if ($resultado instanceof PDOStatement) { // ✅ Verificar que $resultado es un objeto PDOStatement
         $usuario = $resultado->fetchObject(); // ✅ Ahora sí podemos llamar a fetchObject()
         
