@@ -4,6 +4,7 @@ namespace Model;
 
 class Admin extends ActiveRecord {
    
+   
     // Base DE DATOS
     protected static $tabla = 'usuarios';
     protected static $columnasDB = ['id', 'email', 'password'];
@@ -11,6 +12,7 @@ class Admin extends ActiveRecord {
     public $id;
     public $email;
     public $password;
+    public $autenticado = false; 
 
     public function __construct($args = [])
     {
@@ -45,7 +47,7 @@ class Admin extends ActiveRecord {
     }
 
    public function comprobarPassword($resultado) {
-       public $autenticado = false; 
+      
     if ($resultado instanceof PDOStatement) { // ✅ Verificar que $resultado es un objeto PDOStatement
         $usuario = $resultado->fetchObject(); // ✅ Ahora sí podemos llamar a fetchObject()
         
