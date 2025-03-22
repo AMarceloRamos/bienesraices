@@ -1,7 +1,7 @@
 <?php
 
 function conectarDB() {
-    $url = "postgresql://contactodb_i7hi_user:1BesM5VW4iwl5rdJP9IXqNwETiKW9hA0@dpg-cur1vpdds78s7384bkr0-a.oregon-postgres.render.com/contactodb_i7hi";
+    $url = "postgresql://portafoliodb_hb96_user:LUd1w30XSO8bNfXvwb5TwFrflfRnka8K@dpg-cves1qfnoe9s73b9ullg-a.frankfurt-postgres.render.com/portafoliodb_hb96";
     
     // Parsear la URL para obtener los valores
     $dbopts = parse_url($url);
