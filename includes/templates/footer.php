@@ -8,7 +8,7 @@
             </nav>
         </div>
 
-        <p class="copyright">Todos los derechos Reservados <?php echo date('Y'); ?> &copy;</p>
+      <span class="copyright">Copyright &copy; AR <?php echo date("Y") ?> Created By <a href="https://portafolioweb-a3el.onrender.com/" target="_blank">Adrian Ramos</a> </span>
     </footer>
 
     <script src="/build/js/bundle.min.js"></script>
